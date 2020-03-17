@@ -21,11 +21,13 @@ mean_arr<- aggregate.data.frame(dfStud$"男生計",
                      list( Bachelor = dfStud[,"等級別"] == "B 學士",
                            DayCourse = dfStud[,3] == "D 日"), FUN = "mean")
 print(mean_arr[ mean_arr$Bachelor & mean_arr$DayCourse,"x"  ])
-#求變異數
+#求標準差
 sd_arr<-aggregate.data.frame(dfStud$"男生計",
                      list( Bachelor = dfStud[,4] == "B 學士",
                            DayCourse = dfStud[,3] == "D 日"), FUN = "sd")
 print(sd_arr[ mean_arr$Bachelor & mean_arr$DayCourse,"x"  ])
+#反推變異數
+print(sd_arr[ mean_arr$Bachelor & mean_arr$DayCourse,"x"  ]**2)
 #求峰度與偏度
 #install.packages("moments") #安裝moments pacakge
 library("moments")
