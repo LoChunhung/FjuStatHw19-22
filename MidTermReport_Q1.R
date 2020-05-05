@@ -63,18 +63,25 @@ C6comp2<-do.call(cbind,
 )
 C6comp2<-C6comp2[  c(-3,-5)]
 names(C6comp2)<- c("SchName","B","M","D")
+
 C6comp2["SchName"] <- c("政大","清大","台大","交大","輔大","文化","銘傳")
-barplot(cbind(B,M,D) ~ SchName, data = C6comp2,
+row.names(C6comp2) <- c(2,3,1,4,5,6,7)
+
+barplot(cbind(B,M,D) ~ SchName, data = C6comp2[order(row.names(C6comp2),decreasing = FALSE),],
               legend = c("學","碩","博"),args.legend = list(x = "topleft")
         ,ylim = c(0,40000), ylab = "總學生人數", xlab = "大學名稱")
+
 par(mfrow = c(2,4))
-pie(C6comp[7:9,]$"總計", labels = C6comp[7:9,]$"等級別", main = "台大")
-pie(C6comp[1:3,]$"總計", labels = C6comp[1:3,]$"等級別", main = "政大")
-pie(C6comp[4:6,]$"總計", labels = C6comp[4:6,]$"等級別", main = "清大")
-pie(C6comp[10:12,]$"總計", labels = C6comp[10:12,]$"等級別", main = "交大")
-pie(C6comp[13:15,]$"總計", labels = C6comp[13:15,]$"等級別", main = "輔大")
-pie(C6comp[16:18,]$"總計", labels = C6comp[16:18,]$"等級別", main = "文大")
-pie(C6comp[19:21,]$"總計", labels = C6comp[19:21,]$"等級別", main = "銘傳")
+X <- c("0003","0001","0002","0007","1002","1006","1016")
+for (s in X) {
+    print(s)
+    lapply(s, function(s) pie(C6comp[C6comp$"學校代碼" == s,"總計"],
+                              labels = C6comp[C6comp$"學校代碼" == s,"等級別"],
+                              main = C6comp[C6comp$"學校代碼"== s,"學校名稱"][1]
+                              ) 
+           )
+}
+
 # barplot(C6comp$"總計" ~ C6comp$"等級別", data = C6comp)
 # barplot(GNP ~ Year, data = longley)
 # View(longley)

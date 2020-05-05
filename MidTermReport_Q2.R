@@ -41,17 +41,37 @@ plot(dfStAndT[dfStAndT$SchSYS == "私立", "SSum"],dfStAndT[dfStAndT$SchSYS == "
 
 lm(formula= SSum~ TSum, dfStAndT)
 SimpleSTModel<-lm(formula= SSum~ TSum, dfStAndT)
+summary(SimpleSTModel)
 plot(SSum~ TSum, dfStAndT)
 abline(coef(SimpleSTModel))
 #########
 ## Q2-3 #
 #########
-lm(formula= SSum~ TSum, dfStAndT[dfStAndT$SchSYS == "公立",])
-lm(formula= SSum~ TSum, dfStAndT[dfStAndT$SchSYS == "私立",])
-
+PublicSModel <-lm(formula= SSum~ TSum, dfStAndT[dfStAndT$SchSYS == "公立",])
+summary(PublicSModel)
+PrivateSModle <- lm(formula= SSum~ TSum, dfStAndT[dfStAndT$SchSYS == "私立",])
+summary(PrivateSModle)
 #########
 ## Q2-4 #
 #########
+#2020/05/06 AM03:40 updated- done.
+library(data.table)
+#install.packages("mltools")
+library(mltools)
+#Make virtual variable- one hot encode.
+dt<-data.table(SchNo= dfStAndT$SchNo,SchSYS= as.factor(dfStAndT$SchSYS))
+dfsplitM<- as.data.frame(one_hot(dt))
+#baseline- 公立大學
+NewPbSModel<-lm(formula= SSum~ TSum+SchSYS_公立,merge.data.frame(dfStAndT,dfsplitM, 
+                 by= intersect(names(dfStAndT),names(dfsplitM)))[,c(1,4:6)]
+)               
+summary(NewPbSModel)
+#baseline- 私立大學
+NewPrSModel<-lm(formula= SSum~ TSum+SchSYS_私立,merge.data.frame(dfStAndT,dfsplitM, 
+                                                             by= intersect(names(dfStAndT),names(dfsplitM)))[,c(1,4:5,7)]
+)               
+summary(NewPrSModel)
+
 
 #########
 ## Q2-5 #
@@ -62,7 +82,9 @@ dfStaff <-dfStaff[dfStaff$"體系別" == "1 一般",c(1,3)]
 colnames(dfStaff)<-c("SchNo","StfSum")
 # Data Tidy- Books
 dfBooks <- read_excel("108_library.xls", sheet = "校別資料",skip = 10,col_names = TRUE)
-dfBooks <-dfBooks[c(1,4)]
+dfBooks <-dfBooks[c(1,4,14)]
+dfBooks[4]<-dfBooks[2]+dfBooks[3]
+dfBooks <- dfBooks[,c(1,4)]
 colnames(dfBooks)<-c("SchNo","BookSum")
 # Data Tidy- BuildingAreas
 dfLands <-read_excel("108_land.xls",skip = 8)
@@ -82,8 +104,12 @@ dfLands_1<- aggregate(BldAreaSum ~ SchNo,data =dfLands,sum)
 dfAll<-merge.data.frame(dfStAndT,dfStaff, by = intersect(names(dfStAndT),names(dfStaff)))
 dfAll<-merge.data.frame(dfAll,dfBooks, by = intersect(names(dfStAndT),names(dfBooks)))
 dfAll<-merge.data.frame(dfAll,dfLands_1, by = intersect(names(dfStAndT),names(dfLands_1)))
-lm(SSum~TSum+StfSum+BookSum+BldAreaSum,data= dfAll)
-
+MutiRgreModel <-lm(SSum~TSum+StfSum+BookSum+BldAreaSum,data= dfAll)
+#標準化比較
+dfAllstd <- scale(dfAll[,4:8])
+MutiRgreModelstd <-lm(SSum~TSum+StfSum+BookSum+BldAreaSum,data= as.data.frame(dfAllstd) )
+summary(MutiRgreModel)
+summary(MutiRgreModelstd)
 
 # 誤讀老師題目，需刪除教官後其他人員，後經由教育部資料定義發現誤會
 # 保留紀念自己的中文能力拙劣
