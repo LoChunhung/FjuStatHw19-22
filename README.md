@@ -6,6 +6,6 @@
 | 2022FJCU_財務研究方法 | 期末報告 | R |
 | 2021FJCU_碩專班讀書會 | 簡報與範例 | Python |
 | 2022FJCU_金融大數據 | 課堂作業與期末報告 | Python |
-| 2022FJCU_研究生論文相關 | 月讀書籍 | Python |
+| 2022FJCU_研究生論文相關 | 閱讀書籍 | Python |
 |||
 | updatede by Lo, Chunhung @ 2024-05-08 |
