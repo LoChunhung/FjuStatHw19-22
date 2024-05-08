@@ -6,5 +6,6 @@
 | 2022FJCU_財務研究方法 | R |
 | 2021FJCU_碩專班讀書會: Pillow使用範例 | Python |
 | 2022FJCU_金融大數據作業彙整與範例修正 | Python |
+| 2022FJCU_研究生論文相關 | Python |
 |||
 | updatede by Lo, Chunhung @ 2024-05-08 |
